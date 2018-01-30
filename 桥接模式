@@ -1,0 +1,115 @@
+桥接模式的目的是为了将抽象部分与实现部分分离，使他们都可以独立地进行变化，所以说他们两个部分是独立的。
+使用中的作用 将抽象化与实现化解耦，使得二者可以独立变化。
+
+还是用程序员来举个栗子。
+
+首先个中程序员都是写代码的coding，只是大家工作内容不一样而已。那么我们现在就有一个需求，要求你实现两个程序员，一个会java技能，另一个会c++技能。
+如果我们按照传统的方式去实现貌似也可以哈，很简单嘛。但是有一天老板喝醉了，要求c++程序员写java代码，而java程序员去写c++代码，这该怎么办，当然真有
+这种问题的时候我们应该果断离职。告别这个sb领导，不过今天老板又说了，只要能写就发红包，而且是大红包。。。。。这个怎么说呢，跟啥过不去也别跟钱过不去。
+只要有需求我们就是可以实现的嘛。。。哈哈哈。
+
+现在桥接模式就可以登场了。
+我们这样设计。抽象化两个程序员A和B(抽象化部分)，他们都会工作，且工作技能就是java和c++（实现部分），并且将这两部分分开写
+
+
+我们先实现他们的技能
+
+public interface Code {
+    
+    public void coding();
+
+}
+
+java技能
+public class Java implements Code {
+
+    @Override
+    public void coding() {
+        // TODO Auto-generated method stub
+        System.out.println("I can code java...");
+    }
+
+}
+
+C++技能
+public class Cplusplus implements Code {
+
+    @Override
+    public void coding() {
+        // TODO Auto-generated method stub
+        System.out.println("I can code c++...");
+    }
+
+}
+
+程序员A：
+public class CoderA extends Coder {
+
+    public CoderA(Code code) {
+        super(code);
+        // TODO Auto-generated constructor stub
+    }
+
+    @Override
+    public void work() {
+        System.out.print("I am Coder A:  ");
+        // TODO Auto-generated method stub
+        this.getCode().coding();
+        
+    }
+
+}
+
+程序员B:
+public class CoderB extends Coder {
+    
+    public CoderB(Code code) {
+        super(code);
+        // TODO Auto-generated constructor stub
+    }
+
+    @Override
+    public void work() {
+        System.out.print("I am Coder B:  ");
+        this.getCode().coding();
+    }
+}
+
+测试一下：
+public class Test {
+
+    public static void main(String[] args) {
+        
+        Code java = new Java();
+        Code cplusplus = new Cplusplus();
+
+        Coder coderA = new CoderA(java);
+        coderA.work();
+
+        Coder coderB = new CoderB(cplusplus);
+        coderB.work();
+        
+        System.out.println("===========老板喝醉了换技能============");
+        
+        Coder coderA2 = new CoderA(cplusplus);
+        coderA2.work();
+
+        Coder coderB2 = new CoderB(java);
+        coderB2.work();
+    }
+
+}
+看看结果如何：
+I am Coder A:  I can code java...
+I am Coder B:  I can code c++...
+===========老板喝醉了换技能============
+I am Coder A:  I can code c++...
+I am Coder B:  I can code java...
+
+
+妥妥的技能互换成功。再也不怕sb老板了。
+
+
+
+
+
