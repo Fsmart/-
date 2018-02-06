@@ -1,0 +1,84 @@
+public class Hello {
+    public static void main(String[] args) {
+        
+        Demo demo = new Demo();
+        demo.setInstance();
+        Hello hello = new Hello();
+        hello.test();
+        demo.test();
+
+    }
+
+    public void test2() {
+        Class<?> demo1 = null;
+        try {
+            demo1 = Class.forName("com.gaoguangping.invoke.Demo");
+        } catch (Exception e) {
+            // TODO: handle exception
+        }
+
+        try {
+            Method method = demo1.getMethod("test");
+            method.invoke(demo1.newInstance());
+            Method method2 = demo1.getDeclaredMethod("test1");
+            method2.setAccessible(true);
+            method2.invoke(demo1.newInstance());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        System.out.println(demo1.getName());
+    }
+
+    public void test() {
+        try {
+            VADemo vaDemo = new VADemo();
+            Class clazz = Class.forName("com.gaoguangping.invoke.Demo");
+            Field field = clazz.getDeclaredField("sDemo");
+            field.setAccessible(true);
+            Object object = (Object) field.get(null);
+            System.out.println(object);
+            
+            
+            Method method = object.getClass().getDeclaredMethod("test1", null);
+            method.setAccessible(true);
+            method.invoke(object, null);
+            
+            Field field1 = clazz.getDeclaredField("sDemo");
+            field1.setAccessible(true);
+            field1.set(clazz,vaDemo);
+            Object object1 = (Object) field1.get(null);
+            method.invoke(object1, null);
+            
+            
+            
+            
+        } catch (Exception e) {
+            // TODO: handle exception
+            e.printStackTrace();
+        }
+
+    }
+}
+
+
+public class Demo {
+    private static int a = 100;
+    
+    private static Demo sDemo;
+    
+    
+    public void setInstance() {
+        sDemo = new Demo();
+    }
+    public Demo() {
+        
+    }
+    public void test() {
+        test1();
+    }
+    
+    private void test1() {
+        System.out.println("private test1");
+    }
+}
