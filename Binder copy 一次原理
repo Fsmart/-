@@ -1,0 +1,9 @@
+    Binder driver工作于内核态（kernel space), 作为linux内核的一部分，跟随linux系统启动。它向linux内核注册了MISC设备，就是我们看到的dev/binder设备
+文件，当Service/Client调用open/ioctl等系统调用操作dev/binder文件时，就会进入到内核态，执行Binder driver提供的实现（binder_open/binder_ioctl)，
+然后，根据调用者请求的操作（数据写入/发送、数据读取/接收），binder 驱动执行不同的工作。Binder driver没有自己的进程，它总是工作在Client、Service、
+ServiceManager的进程中。
+    基于其将一块物理内存同时映射到Binder driver所在的内核空间和接收进程的用户空间地址的设计，当数据从数据发送方的发送缓存中copy到内核缓冲区时，相当于
+同时也copy到了接收进程的接收缓冲区内，所以，整个数据传输过程中，数据仅需要经过1次copy，提升了数据传输性能。
+
+
+   这里的重点，"将一块物理内存同时映射到Binder driver所在的内核空间和接收进程的用户空间地址的设计" 看到这里就明白为什么是一次copy了。
